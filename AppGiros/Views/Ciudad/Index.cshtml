@@ -1,0 +1,184 @@
+﻿
+
+@{
+    ViewData["Title"] = "Ciudades";
+}
+
+<h1>Ciudadess</h1>
+
+
+<p>
+    <button class="btn btn-primary" onclick="nuevaCiudad()">
+
+        <i class="fas fa-paw"></i> Nueva ciudad
+    </button>
+</p>
+
+<div class="row">
+
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Nombre</th>
+                <th scope="col">Opciones</th>
+            </tr>
+        </thead>
+
+        <tbody id="cuerpoCiudad"></tbody>
+    </table>
+
+</div>
+
+
+
+
+
+<div class="modal fade" id="modalCiudad" tabindex="-1" role="dialog" aria-labelledby="modalPetLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="idTituloModalCiudad">Crear Mascota</h5>
+            </div>
+            <div class="modal-body">
+                <form>
+
+                    <div class="row">
+                        <div class="col-md-6 form-group">
+                            <label for="recipient-name" class="col-form-label">Nombre</label>
+                            <input type="text" class="form-control" id="txtNombreCiudad" placeholder="Nombre" required>
+                        </div>
+                        <br />
+                        <div class="col-md-6 form-group">
+                            <label class="class=" col-form-label"> Paisesq</label>
+                            <select id="cmbPais" class="form-control" onchange="seleccionarPais()" required>
+                                <option> Seleccionar</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    @*<div class="row">
+                        <div class="col-md-6 form-group">
+                            <label class="control-label"> Pais</label>
+                            <select id="cmbPais" class="form-control" onchange="seleccionarPais()" required>
+                                <option> Seleccionar</option>
+                            </select>
+                        </div>
+                    </div>*@
+
+
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                    <i class="fas fa-window-close"></i>
+                    Cancelar
+                </button>
+                <button type="button" class="btn btn-success" onclick="guardarPet()">
+                    <i class="far fa-save"></i>
+                    Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts{
+
+<script type="text/javascript" charset="utf-8">
+
+    var listaPaises = [];
+        let idPais = '';
+
+    $(document).ready(function () {
+
+
+        obtenerPaises();
+    });
+
+    function obtenerPaises() {
+        //modalProcesando(true);
+        $.ajax({
+            url: '@Url.Action("obtenerPaises", "Paises")',
+            method: 'GET',
+            dataType: "json",
+            success: function (data) {
+                //modalProcesando(false);
+
+                console.log(data)
+                listaPaises = data;
+                //carga la nueva data de base de datos en el grid
+                    cargarPaises(listaPaises);
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                //modalProcesando(false);
+                console.error(xhr, textStatus, errorThrown);
+            }
+        });
+    }
+
+    //Cargar sexos en el comboBox
+    function cargarPaises(data, selected) {
+        $("#cmbPais").empty();
+            $("#cmbPais").append('<option value="" disabled selected>Seleccione un pais</option>');
+        $.each(data, function (i, lista) {
+            //seleccione el que estaba si esta editando else muestre todos los que hay
+            if (data[i].idSex == selected) {
+                    $("#cmbPais").append('<option value="' + data[i].idPais + '"selected>' + data[i].nombre + '</option>');
+            }
+            else {
+                    $("#cmbPais").append('<option value="' + data[i].idPais + '">' + data[i].nombre + '</option>');
+            }
+        });
+    }
+
+        //Cargar el id del sexo que selecciones en la variable idSex
+        function seleccionarPais() {
+            var combo = document.getElementById("cmbPais");
+            let selected = combo.options[combo.selectedIndex].value;
+            //let text = combo.options[combo.selectedIndex].text;
+            idPais = selected;
+            console.log("idpais ", idPais);
+        }
+
+        function nuevaCiudad() {
+        console.log("nueva ciudad");
+        if (listaPaises.length == 0) {
+            obtenerPaises();
+        }
+
+        $('#idTituloModalCiudad').html("Crear Ciudad");
+        //limpiarForm();
+            $('#modalCiudad').modal("show");
+    }
+
+        function editarPet(id) {
+            //Asignar el id que viene del grid a la variable global idPet
+            idPet = id;
+            let pet = listaPets.find(x => x.id == idPet);
+
+            idTypePet = pet.idTypePet;
+            idSex = pet.idSex;
+
+            $('#txtNombreCiudad').val(pet.name);
+
+            //setear fechas
+            var now = new Date(pet.dateBorns);
+            var day = ("0" + now.getDate()).slice(-2);
+            var month = ("0" + (now.getMonth() + 1)).slice(-2);
+            var today = now.getFullYear() + "-" + (month) + "-" + (day);
+
+            $('#txtDateBornPet').val(today)
+
+            cargarSexs(listSexs, pet.idSex);
+            cargarTypePets(listTypePets, pet.idTypePet);
+
+            $('#idTituloModalCiudad').html("Editar Mascota");
+            $('#modalPet').modal({ keyboard: true });
+        }
+
+</script>
+}

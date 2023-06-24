@@ -1,0 +1,96 @@
+﻿@*@model IEnumerable<PaisesModels>*@
+@model AppGiros.Models.PaisesModels
+
+@{
+    //ViewData["Title"] = "Pais";
+    //List<Pais> listaPaises = ObtenerListaPaises();
+}
+
+<h1>Paises</h1>
+
+<p>
+    <a asp-action="GuardarPais" class="btn btn-primary">Crear país</a>
+</p>
+
+@*<h3>Crear Pais</h3>
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="GuardarPais">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Nombre" class="control-label"></label>
+                <input asp-for="Nombre" class="form-control" />
+                <span asp-validation-for="Nombre" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+*@
+
+
+<div class="row">
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Nombre</th>
+                <th scope="col">Opciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (ViewBag.listaPaises != null)
+            {
+                 @foreach (var pais in ViewBag.listaPaises)
+                {
+                <tr>
+                <th> @pais.IdPais</th>
+                <th> @pais.Nombre</th>
+                <td>
+                <a asp-action="EditarPais" asp-route-id="@pais.IdPais" class="btn btn-warning"> Editar</a>
+                <a asp-action="Delete" asp-route-id="@pais.IdPais" class="btn btn-danger"> Eliminar</a>
+                </td>
+                </tr>
+                }
+                
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts{
+<script type="text/javascript" charset="utf-8">
+
+    var lisaPaises = [];
+
+        $(document).ready(function () {
+
+
+            obtenerPaises();
+        });
+
+        function obtenerPaises() {
+            //modalProcesando(true);
+            $.ajax({
+                url: '@Url.Action("obtenerPaises", "Paises")',
+                method: 'GET',
+                dataType: "json",
+                success: function (data) {
+                    //modalProcesando(false);
+
+                    console.log(data)
+                    lisaPaises = data;
+                    //carga la nueva data de base de datos en el grid
+                    //cargarGridPets(listaPets);
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    //modalProcesando(false);
+                    console.error(xhr, textStatus, errorThrown);
+                }
+            });
+        }
+
+</script>
+}
