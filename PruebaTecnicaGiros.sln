@@ -5,15 +5,20 @@ VisualStudioVersion = 17.5.33530.505
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1.App", "1.App", "{1FB22B36-F053-48EA-9F98-47D0E37DB634}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppGiros", "AppGiros\AppGiros.csproj", "{4F2D9548-02F7-469A-BD46-E9D61D2A9925}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppGiros", "AppGiros\AppGiros.csproj", "{4F2D9548-02F7-469A-BD46-E9D61D2A9925}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2.Domain", "2.Domain", "{92EF3768-C69B-474E-B9F8-CAF8E7C3F29F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppGiros.Domain", "AppGiros.Domain\AppGiros.Domain.csproj", "{E138EFA6-95EF-43EA-8C1C-C16644E4B786}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppGiros.Domain", "AppGiros.Domain\AppGiros.Domain.csproj", "{E138EFA6-95EF-43EA-8C1C-C16644E4B786}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3.Infraestructure", "3.Infraestructure", "{3C8EE790-5C36-4057-88C8-EF4AB07CD7B2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infraestructure.Core", "Infraestructure.Core\Infraestructure.Core.csproj", "{EF0C3112-52BD-4945-A621-EF8CED17BCB7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infraestructure.Core", "Infraestructure.Core\Infraestructure.Core.csproj", "{EF0C3112-52BD-4945-A621-EF8CED17BCB7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Elementos de la solución", "Elementos de la solución", "{7FCD8C0F-F456-471D-9B81-D5C4F6A34BFC}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
