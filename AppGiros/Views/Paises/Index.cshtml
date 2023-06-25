@@ -28,7 +28,7 @@
 <br />
 <br />
 
-<h4>lista 2</h4>
+<h4>lista de Giros por pais y ciudad</h4>
 <div class="row">
     <table class="table">
         <thead class="thead-dark">
@@ -53,11 +53,11 @@
     var cboPais = document.getElementById("idPais");
     var cboCiudad = document.getElementById("ciudad");
 
-    cboPais.addEventListener("change", refreshCiudades);
-    cboCiudad.addEventListener("change", refreshDatos);
+    cboPais.addEventListener("change", obtenerCiudades);
+    cboCiudad.addEventListener("change", obtenerGiros);
 
     // Llena la lista de ciudades según el país seleccionado
-    function refreshCiudades() {
+    function obtenerCiudades() {
         var idPais = cboPais.value;
         fetch("@Url.Content("~/Ciudad/GetCiudades")" + "?idPais=" + idPais)
             .then(function (result) {
@@ -66,9 +66,11 @@
                 }
             })
             .then(function (data) {
+
                 cboCiudad.innerHTML = ""; // Limpiar las opciones anteriores
-                    console.log("datos", data); //  data ya contiene los elementos y es un arreglo iterable
-                // Agregar las nuevas opciones
+                 console.log("datos", data); 
+
+                // Agregar opciones
                 data.forEach(function (element) {
                     let eOption = document.createElement("option");
                     eOption.appendChild(document.createTextNode(element.text));
@@ -76,13 +78,13 @@
                     cboCiudad.appendChild(eOption);
                 });
 
-                // Disparar el evento 'change' para actualizar los datos de la tabla
-                refreshDatos();
+                // obtner datos de giros
+                obtenerGiros();
             });
     }
 
     // Actualiza los datos de la tabla según la ciudad seleccionada
-    function refreshDatos() {
+    function obtenerGiros() {
         idCiudad = cboCiudad.value;
         fetch("@Url.Content("~/Giros/GetGiros")" + "?idCiudad=" + idCiudad)
             .then(function (result) {
@@ -96,10 +98,9 @@
                 cargarGridGiros(data);
             });
     }
-    console.log("pais", cboPais.value);
-        console.log("ciudad", cboCiudad.value);
+
     // Ejecutar para llenar la lista de ciudades al cargar la página
-    refreshCiudades();
+    obtenerCiudades();
 
     function cargarGridGiros(data) {
         $("#cuerpoGiros").html("");
