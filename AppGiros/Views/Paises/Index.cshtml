@@ -1,9 +1,9 @@
 ﻿@*@model IEnumerable<PaisesModels>*@
-@model AppGiros.Models.PaisesModels
+@*@model AppGiros.Models.PaisesModels*@
+@model List<SelectListItem>
 
 @{
-    //ViewData["Title"] = "Pais";
-    //List<Pais> listaPaises = ObtenerListaPaises();
+    ViewData["Title"] = "Paises";
 }
 
 <h1>Paises</h1>
@@ -12,85 +12,112 @@
     <a asp-action="GuardarPais" class="btn btn-primary">Crear país</a>
 </p>
 
-@*<h3>Crear Pais</h3>
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="GuardarPais">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Nombre" class="control-label"></label>
-                <input asp-for="Nombre" class="form-control" />
-                <span asp-validation-for="Nombre" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+    <div class="col-md-6 col-md-offset-3">
+        <div class="form-group">
+            Pais
+            @Html.DropDownList("Paises", Model, new { @class = "form-control", id="idPais" }) @*// Alarga los botones*@
+        </div>
+        <div class="form-group">
+            Ciudad
+            <select id="ciudad" name="ciudad" class="form-control"></select>
+        </div>
     </div>
 </div>
-*@
 
+<br />
+<br />
 
+<h4>lista 2</h4>
 <div class="row">
     <table class="table">
         <thead class="thead-dark">
             <tr>
-                <th scope="col">Id</th>
-                <th scope="col">Nombre</th>
-                <th scope="col">Opciones</th>
+                <th scope="col">GIR_GIRO_ID</th>
+                <th scope="col">GIR_RECIBO</th>
+                <th scope="col">GIR_CIUDAD_ID</th>
             </tr>
         </thead>
-        <tbody>
-            @if (ViewBag.listaPaises != null)
-            {
-                 @foreach (var pais in ViewBag.listaPaises)
-                {
-                <tr>
-                <th> @pais.IdPais</th>
-                <th> @pais.Nombre</th>
-                <td>
-                <a asp-action="EditarPais" asp-route-id="@pais.IdPais" class="btn btn-warning"> Editar</a>
-                <a asp-action="Delete" asp-route-id="@pais.IdPais" class="btn btn-danger"> Eliminar</a>
-                </td>
-                </tr>
-                }
-                
-            }
-        </tbody>
+
+        <tbody id="cuerpoGiros"></tbody>
     </table>
 </div>
 
+
+
 @section Scripts{
-<script type="text/javascript" charset="utf-8">
 
-    var lisaPaises = [];
+<script>
+    var listaGiros = [];
+    var idCiudad= "";
+    var cboPais = document.getElementById("idPais");
+    var cboCiudad = document.getElementById("ciudad");
 
-        $(document).ready(function () {
+    cboPais.addEventListener("change", refreshCiudades);
+    cboCiudad.addEventListener("change", refreshDatos);
 
-
-            obtenerPaises();
-        });
-
-        function obtenerPaises() {
-            //modalProcesando(true);
-            $.ajax({
-                url: '@Url.Action("obtenerPaises", "Paises")',
-                method: 'GET',
-                dataType: "json",
-                success: function (data) {
-                    //modalProcesando(false);
-
-                    console.log(data)
-                    lisaPaises = data;
-                    //carga la nueva data de base de datos en el grid
-                    //cargarGridPets(listaPets);
-                },
-                error: function (xhr, textStatus, errorThrown) {
-                    //modalProcesando(false);
-                    console.error(xhr, textStatus, errorThrown);
+    // Llena la lista de ciudades según el país seleccionado
+    function refreshCiudades() {
+        var idPais = cboPais.value;
+        fetch("@Url.Content("~/Ciudad/GetCiudades")" + "?idPais=" + idPais)
+            .then(function (result) {
+                if (result.ok) {
+                    return result.json();
                 }
+            })
+            .then(function (data) {
+                cboCiudad.innerHTML = ""; // Limpiar las opciones anteriores
+                    console.log("datos", data); //  data ya contiene los elementos y es un arreglo iterable
+                // Agregar las nuevas opciones
+                data.forEach(function (element) {
+                    let eOption = document.createElement("option");
+                    eOption.appendChild(document.createTextNode(element.text));
+                    eOption.value = element.value;
+                    cboCiudad.appendChild(eOption);
+                });
+
+                // Disparar el evento 'change' para actualizar los datos de la tabla
+                refreshDatos();
             });
+    }
+
+    // Actualiza los datos de la tabla según la ciudad seleccionada
+    function refreshDatos() {
+        idCiudad = cboCiudad.value;
+        fetch("@Url.Content("~/Giros/GetGiros")" + "?idCiudad=" + idCiudad)
+            .then(function (result) {
+                if (result.ok) {
+                    return result.json();
+                }
+            })
+            .then(function (data) {
+
+                //console.log("Datos tabla", data);
+                cargarGridGiros(data);
+            });
+    }
+    console.log("pais", cboPais.value);
+        console.log("ciudad", cboCiudad.value);
+    // Ejecutar para llenar la lista de ciudades al cargar la página
+    refreshCiudades();
+
+    function cargarGridGiros(data) {
+        $("#cuerpoGiros").html("");
+
+        for (var i = 0; i < data.length; i++) {
+            var tr = `
+                    <tr>
+                    <th>`+ data[i].value + `</th>
+                    <th> `+ data[i].text + `</th>
+                    <th> `+ idCiudad + `</th>
+                    <td>
+                    </td>
+                </tr>
+                `;
+            $("#cuerpoGiros").append(tr);
         }
+    }
 
 </script>
+
 }

@@ -9,7 +9,6 @@
 
 <p>
     <button class="btn btn-primary" onclick="nuevaCiudad()">
-
         <i class="fas fa-paw"></i> Nueva ciudad
     </button>
 </p>
@@ -34,6 +33,8 @@
 
 
 
+
+
 <div class="modal fade" id="modalCiudad" tabindex="-1" role="dialog" aria-labelledby="modalPetLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
@@ -45,28 +46,16 @@
 
                     <div class="row">
                         <div class="col-md-6 form-group">
-                            <label for="recipient-name" class="col-form-label">Nombre</label>
+                            <label class="col-form-label">Nombre</label>
                             <input type="text" class="form-control" id="txtNombreCiudad" placeholder="Nombre" required>
                         </div>
-                        <br />
                         <div class="col-md-6 form-group">
-                            <label class="class=" col-form-label"> Paisesq</label>
+                            <label class="col-form-label">Pais</label>
                             <select id="cmbPais" class="form-control" onchange="seleccionarPais()" required>
-                                <option> Seleccionar</option>
+                                <option>Seleccionar</option>
                             </select>
                         </div>
                     </div>
-
-                    @*<div class="row">
-                        <div class="col-md-6 form-group">
-                            <label class="control-label"> Pais</label>
-                            <select id="cmbPais" class="form-control" onchange="seleccionarPais()" required>
-                                <option> Seleccionar</option>
-                            </select>
-                        </div>
-                    </div>*@
-
-
 
                 </form>
             </div>
@@ -90,7 +79,7 @@
 
 <script type="text/javascript" charset="utf-8">
 
-    var listaPaises = [];
+    var listaCiudades = [];
         let idPais = '';
 
     $(document).ready(function () {
@@ -102,16 +91,16 @@
     function obtenerPaises() {
         //modalProcesando(true);
         $.ajax({
-            url: '@Url.Action("obtenerPaises", "Paises")',
+            url: '@Url.Action("ObtenerCiudades", "Ciudad")',
             method: 'GET',
             dataType: "json",
             success: function (data) {
                 //modalProcesando(false);
 
                 console.log(data)
-                listaPaises = data;
+                listaCiudades = data;
                 //carga la nueva data de base de datos en el grid
-                    cargarPaises(listaPaises);
+                cargarCiudades(listaCiudades);
             },
             error: function (xhr, textStatus, errorThrown) {
                 //modalProcesando(false);
@@ -121,7 +110,7 @@
     }
 
     //Cargar sexos en el comboBox
-    function cargarPaises(data, selected) {
+    function cargarCiudades(data, selected) {
         $("#cmbPais").empty();
             $("#cmbPais").append('<option value="" disabled selected>Seleccione un pais</option>');
         $.each(data, function (i, lista) {
@@ -146,7 +135,7 @@
 
         function nuevaCiudad() {
         console.log("nueva ciudad");
-        if (listaPaises.length == 0) {
+        if (listaCiudades.length == 0) {
             obtenerPaises();
         }
 
