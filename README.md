@@ -1,4 +1,6 @@
 Script para generar base de datos
+
+
 USE [master]
 GO
 /****** Object:  Database [BdPaises]    Script Date: 25/06/2023 10:43:24 a. m. ******/

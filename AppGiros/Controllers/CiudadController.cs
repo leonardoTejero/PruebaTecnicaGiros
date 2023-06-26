@@ -53,46 +53,10 @@ namespace AppGiros.Controllers
 
             return Ok(listaCiudades);
         }
+     
 
         [HttpGet]
-        public JsonResult GetCiudades2(int idPais)
-        {
-            List<ConvertirJson> list = new List<ConvertirJson>();
-
-            string connectionString = Configuration["ConnectionStrings:ConnectionStringSQLServer"];
-            //using (SqlConnection conexion = new(Configuration["ConnectionStrings:ConnectionStringSQLServer"]))
-            using (SqlConnection conexion = new SqlConnection(connectionString))
-            {
-
-                string query = "SELECT id_ciudad, nombre FROM CIUDAD WHERE id_pais = @idPais";
-                conexion.Open();
-                //SqlParameter parameter = new SqlParameter("@id_pais", idPais);
-
-                using (SqlCommand command = new SqlCommand(query, conexion))
-                {
-
-                    command.Parameters.AddWithValue("@id_pais", idPais);
-                    using SqlDataReader reader = command.ExecuteReader();
-                    while (reader.Read())
-                    {
-
-                        // Leer los datos de cada registro y agregarlos a la lista de ciudades
-                        ConvertirJson item = new ConvertirJson
-                        {
-                            Value = reader.GetInt32(0),
-                            Text = reader.GetString(1),
-                        };
-
-                        list.Add(item);
-
-                    }
-                }
-            }
-            return Json(list); // serializa la lista a json 
-        }
-
-        [HttpGet]
-        public JsonResult GetCiudades(int idPais)
+        public JsonResult ObtenerCiudadesPais(int idPais)
         {
             List<ConvertirJson> list = new List<ConvertirJson>();
 
@@ -122,12 +86,32 @@ namespace AppGiros.Controllers
             return Json(list); // serializa la lista a JSON
         }
 
-
-        //clase modelo para enviar datos, llenar combo box
-        public class ConvertirJson
+        [HttpPost]
+        public IActionResult GuardarCiudad(CiudadesModels ciudad)
         {
-            public int Value { get; set; }
-            public string Text { get; set; }
+            bool respuesta;
+            try
+            {
+                using (SqlConnection conexion = new(Configuration["ConnectionStrings:ConnectionStringSQLServer"]))
+                {
+                    string query = "INSERT INTO CIUDADES VALUES(@nombre, @id_pais)";
+                    conexion.Open();
+                    using (SqlCommand command = new SqlCommand(query, conexion))
+                    {
+                        command.Parameters.AddWithValue("@nombre", ciudad.Nombre);
+                        command.Parameters.AddWithValue("@id_pais", ciudad.IdPais);
+                        command.ExecuteNonQuery();
+                    }
+                    conexion.Close();
+                }
+                respuesta = true;
+                return Ok(respuesta);
+            }
+            catch (Exception ex)
+            {
+                respuesta=false;
+                return Ok(respuesta);
+            }
         }
 
     }

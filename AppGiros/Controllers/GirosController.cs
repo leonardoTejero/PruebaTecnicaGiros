@@ -22,42 +22,42 @@ namespace AppGiros.Controllers
 
 
         [HttpGet]
-        public IActionResult ObtenerGiros()
-        {
-            List<GirosModels> listaGiros = new List<GirosModels>();
+        //public IActionResult ObtenerGiros()
+        //{
+        //    List<GirosModels> listaGiros = new List<GirosModels>();
 
-            using (SqlConnection conexion = new SqlConnection(Configuration["ConnectionStrings:ConnectionStringSQLServer"]))
-            {
-                string query = "SELECT * FROM GIROS";
-                conexion.Open();
+        //    using (SqlConnection conexion = new SqlConnection(Configuration["ConnectionStrings:ConnectionStringSQLServer"]))
+        //    {
+        //        string query = "SELECT * FROM GIROS";
+        //        conexion.Open();
 
-                using (SqlCommand command = new SqlCommand(query, conexion))
-                {
-                    using SqlDataReader reader = command.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        // Leer los datos de cada registro y agregarlos a la lista de ciudades
-                        GirosModels ciudad = new()
-                        {
-                            Id = reader.GetInt32(0),
-                            Recibo = reader.GetString(1),
-                            IdCiudad = reader.GetInt32(2),
-                        };
-                        listaGiros.Add(ciudad);
-                    }
-                }
+        //        using (SqlCommand command = new SqlCommand(query, conexion))
+        //        {
+        //            using SqlDataReader reader = command.ExecuteReader();
+        //            while (reader.Read())
+        //            {
+        //                // Leer los datos de cada registro y agregarlos a la lista de ciudades
+        //                GirosModels ciudad = new()
+        //                {
+        //                    Id = reader.GetInt32(0),
+        //                    Recibo = reader.GetString(1),
+        //                    IdCiudad = reader.GetInt32(2),
+        //                };
+        //                listaGiros.Add(ciudad);
+        //            }
+        //        }
 
-                conexion.Close();
-            }
-            GirosViewModel viewModel = new GirosViewModel
-            {
-                ListaGiros = listaGiros
-            };
+        //        conexion.Close();
+        //    }
+        //    GirosViewModel viewModel = new GirosViewModel
+        //    {
+        //        ListaGiros = listaGiros
+        //    };
 
-            //return Ok(listaGiros);
-            return View(viewModel);
-        }
-
+        //    //return Ok(listaGiros);
+        //    return View(viewModel);
+        //}
+        
 
         [HttpGet]
         public JsonResult GetGiros(int idCiudad)

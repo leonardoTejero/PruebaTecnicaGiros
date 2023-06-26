@@ -4,23 +4,24 @@
     ViewData["Title"] = "Ciudades";
 }
 
-<h1>Ciudadess</h1>
+<h1>Ciudades</h1>
 
 
 <p>
-    <button class="btn btn-primary" onclick="nuevaCiudad()">
+    <button class="btn btn-primary" onclick="crearCiudadModal()">
         <i class="fas fa-paw"></i> Nueva ciudad
     </button>
 </p>
+
 
 <div class="row">
 
     <table class="table">
         <thead class="thead-dark">
             <tr>
-                <th scope="col">ID</th>
-                <th scope="col">Nombre</th>
-                <th scope="col">Opciones</th>
+                <th class="col-md-4">ID</th>
+                <th class="col-md-4">Nombre</th>
+                <th >Opciones</th>
             </tr>
         </thead>
 
@@ -31,15 +32,11 @@
 
 
 
-
-
-
-
 <div class="modal fade" id="modalCiudad" tabindex="-1" role="dialog" aria-labelledby="modalPetLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="idTituloModalCiudad">Crear Mascota</h5>
+                <h5 class="modal-title" id="idTituloModalCiudad">Crear ciudad</h5>
             </div>
             <div class="modal-body">
                 <form>
@@ -56,7 +53,6 @@
                             </select>
                         </div>
                     </div>
-
                 </form>
             </div>
             <div class="modal-footer">
@@ -64,7 +60,7 @@
                     <i class="fas fa-window-close"></i>
                     Cancelar
                 </button>
-                <button type="button" class="btn btn-success" onclick="guardarPet()">
+                <button type="button" class="btn btn-success" onclick="guardarCiudad()">
                     <i class="far fa-save"></i>
                     Guardar
                 </button>
@@ -80,93 +76,155 @@
 <script type="text/javascript" charset="utf-8">
 
     var listaCiudades = [];
-        let idPais = '';
+    var listaPaises = [];
+    let idPais = '';
 
     $(document).ready(function () {
 
-
         obtenerPaises();
+        obtenerCiudades()
     });
 
     function obtenerPaises() {
-        //modalProcesando(true);
         $.ajax({
-            url: '@Url.Action("ObtenerCiudades", "Ciudad")',
+                url: '@Url.Action("ObtenerPaises", "Paises")',
             method: 'GET',
             dataType: "json",
             success: function (data) {
-                //modalProcesando(false);
 
-                console.log(data)
-                listaCiudades = data;
-                //carga la nueva data de base de datos en el grid
-                cargarCiudades(listaCiudades);
+                console.log("paises?", data)
+                listaPaises = data;
+                cargarPaises(data) 
             },
             error: function (xhr, textStatus, errorThrown) {
-                //modalProcesando(false);
                 console.error(xhr, textStatus, errorThrown);
             }
         });
     }
 
-    //Cargar sexos en el comboBox
-    function cargarCiudades(data, selected) {
-        $("#cmbPais").empty();
-            $("#cmbPais").append('<option value="" disabled selected>Seleccione un pais</option>');
-        $.each(data, function (i, lista) {
-            //seleccione el que estaba si esta editando else muestre todos los que hay
-            if (data[i].idSex == selected) {
-                    $("#cmbPais").append('<option value="' + data[i].idPais + '"selected>' + data[i].nombre + '</option>');
-            }
-            else {
-                    $("#cmbPais").append('<option value="' + data[i].idPais + '">' + data[i].nombre + '</option>');
+    function obtenerCiudades() {
+        $.ajax({
+            url: '@Url.Action("ObtenerCiudades", "Ciudad")',
+            method: 'GET',
+            dataType: "json",
+            success: function (data) {
+
+                console.log("ciudades", data)
+
+                listaCiudades = data;
+                cargarGridCiudades(listaCiudades);
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                console.error(xhr, textStatus, errorThrown);
             }
         });
     }
 
-        //Cargar el id del sexo que selecciones en la variable idSex
-        function seleccionarPais() {
-            var combo = document.getElementById("cmbPais");
-            let selected = combo.options[combo.selectedIndex].value;
-            //let text = combo.options[combo.selectedIndex].text;
-            idPais = selected;
-            console.log("idpais ", idPais);
-        }
-
-        function nuevaCiudad() {
-        console.log("nueva ciudad");
-        if (listaCiudades.length == 0) {
-            obtenerPaises();
-        }
-
-        $('#idTituloModalCiudad').html("Crear Ciudad");
-        //limpiarForm();
-            $('#modalCiudad').modal("show");
+    //Cargar comboBox
+    function cargarPaises(data, selected) {
+        $("#cmbPais").empty();
+            $("#cmbPais").append('<option value="" disabled selected>Seleccione un pais</option>');
+        $.each(data, function (i, lista) {
+            $("#cmbPais").append('<option value="' + data[i].idPais + '">' + data[i].nombre + '</option>');
+        });
     }
 
-        function editarPet(id) {
-            //Asignar el id que viene del grid a la variable global idPet
-            idPet = id;
-            let pet = listaPets.find(x => x.id == idPet);
+     //Cargar el id que selecciones en la variable
+    function seleccionarPais() {
+        var combo = document.getElementById("cmbPais");
+        let selected = combo.options[combo.selectedIndex].value;
+        idPais = selected;
+        console.log("idpais ", idPais);
+    }
 
-            idTypePet = pet.idTypePet;
-            idSex = pet.idSex;
+    function cargarGridCiudades(data) {
+        $("#cuerpoCiudad").html("");
 
-            $('#txtNombreCiudad').val(pet.name);
+        for (var i = 0; i < data.length; i++) {
+            var tr = `
+                    <tr>
+                    <th>`+ data[i].id + `</th>
+                    <th> `+ data[i].nombre + `</th>
+                    <td>
+                    <button  class="btn btn-warning" onclick="editarCiudad(`+ data[i].id + `)"><i class="fas fa-edit"></i> Editar</button>
+                     <button class="btn btn-danger" onclick="eliminarCiudad(`+ data[i].id + `)"><i class="far fa-trash-alt"></i> Eliminar</button>
+                    </td>
+                </tr>
+                `;
+         $("#cuerpoCiudad").append(tr);
+        }
+    }
 
-            //setear fechas
-            var now = new Date(pet.dateBorns);
-            var day = ("0" + now.getDate()).slice(-2);
-            var month = ("0" + (now.getMonth() + 1)).slice(-2);
-            var today = now.getFullYear() + "-" + (month) + "-" + (day);
+    function crearCiudadModal() {
 
-            $('#txtDateBornPet').val(today)
+        $('#idTituloModalCiudad').html("Crear Ciudad");
+        $('#modalCiudad').modal("show");
+    }
 
-            cargarSexs(listSexs, pet.idSex);
-            cargarTypePets(listTypePets, pet.idTypePet);
+        function guardarCiudad() {
 
-            $('#idTituloModalCiudad').html("Editar Mascota");
-            $('#modalPet').modal({ keyboard: true });
+            let parametro = {
+                Nombre: $("#txtNombreCiudad").val(),
+                IdPais: idPais,
+            };
+
+                //if (idCiudad == '') {
+                $.ajax({
+                url: '@Url.Action("GuardarCiudad", "Ciudad")',
+                    method: 'POST',
+                    data: parametro,
+                    dataType: "json",
+                    success: function (data) {
+
+                        if (data) {
+                            alert("Ciudad Guardada exitosamente");
+
+                            $('#modalCiudad').modal('hide');
+                            obtenerCiudades();
+                    
+                        }else{
+                            alert("ocurrio un error al guardar");
+                        }
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.error(xhr, textStatus, errorThrown);
+                    }
+                });
+                //} else {
+                //    parametro.Id = idCiudad;
+                //    console.log(parametro);
+                //    console.log('actualizar');
+
+                //    modalProcesando(true);
+                //    $.ajax({
+                //        url: '@Url.Action("UpdatePet", "Pet")',
+                //        method: 'PUT',
+                //        data: parametro,
+                //        dataType: "json",
+                //        success: function (data) {
+                //            modalProcesando(false);
+
+                //            console.log(listaPets);
+
+                //            if (data) {
+                //                $('#modalPet').modal('hide');
+                //                limpiarForm();
+                //                toastMessage('success', 'Mascota actualizada exitosamente!');
+                //                //cargar nuevamente la data--------------------------------
+                //                getAllMyPets();
+                //            } else {
+                //                toastMessage('error', 'Hubo un error al guardar, por favor intentarlo nuevamente!');
+                //            }
+
+                //        },
+                //        error: function (xhr, textStatus, errorThrown) {
+                //            modalProcesando(false);
+                //            toastMessage('error', 'Hubo un error al guardar, por favor intentarlo nuevamente!');
+                //            console.error(xhr, textStatus, errorThrown);
+                //        }
+                //    });
+                //}
+            
         }
 
 </script>

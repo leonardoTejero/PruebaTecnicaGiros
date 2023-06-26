@@ -1,5 +1,4 @@
-﻿@*@model IEnumerable<PaisesModels>*@
-@*@model AppGiros.Models.PaisesModels*@
+﻿
 @model List<SelectListItem>
 
 @{
@@ -11,6 +10,21 @@
 <p>
     <a asp-action="GuardarPais" class="btn btn-primary">Crear país</a>
 </p>
+
+<h4>lista Paises</h4>
+<div class="row">
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th class="col-md-4">Id</th>
+                <th class="col-md-4">Pais</th>
+                <th >Opciones</th>
+            </tr>
+        </thead>
+
+        <tbody id="cuerpoPaises"></tbody>
+    </table>
+</div>
 
 <div class="row">
     <div class="col-md-6 col-md-offset-3">
@@ -53,13 +67,18 @@
     var cboPais = document.getElementById("idPais");
     var cboCiudad = document.getElementById("ciudad");
 
+        $(document).ready(function () {
+
+            obtenerPaises();
+        });
+
     cboPais.addEventListener("change", obtenerCiudades);
     cboCiudad.addEventListener("change", obtenerGiros);
 
     // Llena la lista de ciudades según el país seleccionado
     function obtenerCiudades() {
         var idPais = cboPais.value;
-        fetch("@Url.Content("~/Ciudad/GetCiudades")" + "?idPais=" + idPais)
+            fetch("@Url.Content("~/Ciudad/ObtenerCiudadesPais")" + "?idPais=" + idPais)
             .then(function (result) {
                 if (result.ok) {
                     return result.json();
@@ -116,6 +135,59 @@
                 </tr>
                 `;
             $("#cuerpoGiros").append(tr);
+        }
+    }
+
+
+
+        //function obtenerPaises() {
+        //    $.ajax({
+        //        url: '@Url.Action("ObtenerPaises", "Paises")',
+        //        method: 'GET',
+        //        dataType: "json",
+        //        success: function (data) {
+
+        //            console.log("paises?", data)
+        //            listaPaises = data;
+        //            cargarPaises(data)
+        //        },
+        //        error: function (xhr, textStatus, errorThrown) {
+        //            console.error(xhr, textStatus, errorThrown);
+        //        }
+        //    });
+        //}
+
+        function obtenerPaises() {
+            idCiudad = cboCiudad.value;
+            fetch("@Url.Content("~/Paises/ObtenerPaises")")
+                .then(function (result) {
+                    if (result.ok) {
+                        return result.json();
+                    }
+                })
+                .then(function (data) {
+
+                    console.log(data);
+                    cargarGridPaises(data);
+                });
+        }
+
+
+    function cargarGridPaises(data) {
+        $("#cuerpoPaises").html("");
+
+        for (var i = 0; i < data.length; i++) {
+            var tr = `
+                        <tr>
+                        <th>`+ data[i].idPais + `</th>
+                        <th> `+ data[i].nombre + `</th>
+                        <td>
+                        <button  class="btn btn-warning" onclick="editarCiudad(`+ data[i].id + `)"><i class="fas fa-edit"></i> Editar</button>
+                        <button class="btn btn-danger" onclick="eliminarCiudad(`+ data[i].id + `)"><i class="far fa-trash-alt"></i> Eliminar</button>
+                        </td>
+                    </tr>
+                    `;
+            $("#cuerpoPaises").append(tr);
         }
     }
 
