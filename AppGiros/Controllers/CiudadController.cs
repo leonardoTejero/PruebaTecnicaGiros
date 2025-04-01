@@ -21,7 +21,7 @@ namespace AppGiros.Controllers
             return View();
         }
 
-
+        // Ajustar sacar logica del controlador
         [HttpGet]
         public IActionResult ObtenerCiudades()
         {
