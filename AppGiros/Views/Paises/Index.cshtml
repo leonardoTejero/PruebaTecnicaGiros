@@ -67,10 +67,10 @@
     var cboPais = document.getElementById("idPais");
     var cboCiudad = document.getElementById("ciudad");
 
-        $(document).ready(function () {
+    $(document).ready(function () {
 
-            obtenerPaises();
-        });
+        obtenerPaises();
+    });
 
     cboPais.addEventListener("change", obtenerCiudades);
     cboCiudad.addEventListener("change", obtenerGiros);
@@ -87,13 +87,13 @@
             .then(function (data) {
 
                 cboCiudad.innerHTML = ""; // Limpiar las opciones anteriores
-                 console.log("datos", data); 
+                console.log("datos", data); 
 
                 // Agregar opciones
                 data.forEach(function (element) {
                     let eOption = document.createElement("option");
-                    eOption.appendChild(document.createTextNode(element.text));
-                    eOption.value = element.value;
+                    eOption.appendChild(document.createTextNode(element.nombre));
+                    eOption.value = element.id;
                     cboCiudad.appendChild(eOption);
                 });
 
@@ -138,8 +138,6 @@
         }
     }
 
-
-
         //function obtenerPaises() {
         //    $.ajax({
         //        url: '@Url.Action("ObtenerPaises", "Paises")',
@@ -157,7 +155,7 @@
         //    });
         //}
 
-        function obtenerPaises() {
+    function obtenerPaises() {
             idCiudad = cboCiudad.value;
             fetch("@Url.Content("~/Paises/ObtenerPaises")")
                 .then(function (result) {
@@ -171,7 +169,6 @@
                     cargarGridPaises(data);
                 });
         }
-
 
     function cargarGridPaises(data) {
         $("#cuerpoPaises").html("");

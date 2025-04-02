@@ -31,7 +31,6 @@
 </div>
 
 
-
 <div class="modal fade" id="modalCiudad" tabindex="-1" role="dialog" aria-labelledby="modalPetLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
@@ -161,7 +160,7 @@
         $('#modalCiudad').modal("show");
     }
 
-        function guardarCiudad() {
+    function guardarCiudad() {
 
             let parametro = {
                 Nombre: $("#txtNombreCiudad").val(),
@@ -226,6 +225,33 @@
                 //}
             
         }
+
+    function eliminarCiudad(idCiudad){
+
+            let parametro = {
+                idCiudad: idCiudad,
+            };
+
+            $.ajax({
+                url: '@Url.Action("EliminarCiudad", "Ciudad")',
+                method: 'DELETE',
+                data: parametro,
+                dataType: "json",
+                success: function (data) {
+
+                    if (data) {
+                        alert("Ciudad Eliminada exitosamente");
+                        obtenerCiudades();
+
+                    } else {
+                        alert("ocurrio un error al eliminar");
+                    }
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    console.error(xhr, textStatus, errorThrown);
+                }
+            });
+    }
 
 </script>
 }
