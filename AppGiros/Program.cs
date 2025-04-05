@@ -7,7 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 // Inyeccion 
+builder.Services.AddScoped<ManejadorGiros, ManejadorGiros>(); 
 builder.Services.AddScoped<ManejadorCiudad, ManejadorCiudad>(); 
+builder.Services.AddScoped<ManejadorPais, ManejadorPais>(); 
 builder.Services.AddScoped<DatabaseHelper, DatabaseHelper>(); 
 
 var app = builder.Build();

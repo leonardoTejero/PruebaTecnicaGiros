@@ -1,21 +1,20 @@
-﻿using AppGiros.Models;
+﻿using AppGiros.Manejadores;
+using AppGiros.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.CodeAnalysis.Elfie.Diagnostics;
-using System.Collections.Generic;
-using System.Data;
 using System.Data.SqlClient;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace AppGiros.Controllers
 {
     public class PaisesController : Controller
     {
         public IConfiguration Configuration { get; set; }
+        public ManejadorPais _manejadorPais { get; set; }
 
-        public PaisesController(IConfiguration configuration)
+        public PaisesController(IConfiguration configuration, ManejadorPais manejadorPais)
         {
             Configuration = configuration;
+            _manejadorPais = manejadorPais;
         }
 
         public IActionResult Index()
@@ -72,7 +71,6 @@ namespace AppGiros.Controllers
             return Redirect("Index");
         }
 
-
         public IActionResult EditarPais()
         {
             return View();
@@ -105,36 +103,8 @@ namespace AppGiros.Controllers
         [HttpGet]
         public IActionResult ObtenerPaises()
         {
-            List<PaisesModels> listaPaises = new();
-            using (SqlConnection conexion = new(Configuration["ConnectionStrings:ConnectionStringSQLServer"]))
-            {
-                using (SqlCommand cmd = new("sp_obtenerPaises", conexion))
-                {
-                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                    conexion.Open();
-                    SqlDataAdapter adapter = new(cmd);
-                    DataTable dataTable = new DataTable();
-                    adapter.Fill(dataTable);
-                    dataTable.Dispose();
-
-                    //List<PaisesModels> listaPaises = new();
-
-                    for (int i = 0; i < dataTable.Rows.Count; i++)
-                    {
-                        listaPaises.Add(new PaisesModels()
-                        {
-                            IdPais = Convert.ToInt32(dataTable.Rows[i][0]),
-                            Nombre = (dataTable.Rows[i][1]).ToString()
-
-                        });
-                    }
-                    ViewBag.listaPaises = listaPaises;
-                    conexion.Close();
-
-                }
-                return Ok(listaPaises);
-            }
+            var paises = _manejadorPais.ObtenerPaises(); 
+            return Json(paises);
         }
-
     }
 }

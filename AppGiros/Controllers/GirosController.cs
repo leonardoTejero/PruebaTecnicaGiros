@@ -1,4 +1,5 @@
-﻿using AppGiros.Models;
+﻿using AppGiros.Manejadores;
+using AppGiros.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Data.SqlClient;
 using static AppGiros.Controllers.CiudadController;
@@ -9,55 +10,18 @@ namespace AppGiros.Controllers
     {
 
         public IConfiguration Configuration { get; set; }
+        public ManejadorGiros _manejadorGiros { get; set; }
 
-        public GirosController(IConfiguration configuration)
+        public GirosController(IConfiguration configuration, ManejadorGiros manejadorGiros)
         {
             Configuration = configuration;
+            _manejadorGiros = manejadorGiros;
         }
 
         public IActionResult Index()
         {
             return View();
         }
-
-
-        [HttpGet]
-        //public IActionResult ObtenerGiros()
-        //{
-        //    List<GirosModels> listaGiros = new List<GirosModels>();
-
-        //    using (SqlConnection conexion = new SqlConnection(Configuration["ConnectionStrings:ConnectionStringSQLServer"]))
-        //    {
-        //        string query = "SELECT * FROM GIROS";
-        //        conexion.Open();
-
-        //        using (SqlCommand command = new SqlCommand(query, conexion))
-        //        {
-        //            using SqlDataReader reader = command.ExecuteReader();
-        //            while (reader.Read())
-        //            {
-        //                // Leer los datos de cada registro y agregarlos a la lista de ciudades
-        //                GirosModels ciudad = new()
-        //                {
-        //                    Id = reader.GetInt32(0),
-        //                    Recibo = reader.GetString(1),
-        //                    IdCiudad = reader.GetInt32(2),
-        //                };
-        //                listaGiros.Add(ciudad);
-        //            }
-        //        }
-
-        //        conexion.Close();
-        //    }
-        //    GirosViewModel viewModel = new GirosViewModel
-        //    {
-        //        ListaGiros = listaGiros
-        //    };
-
-        //    //return Ok(listaGiros);
-        //    return View(viewModel);
-        //}
-        
 
         [HttpGet]
         public JsonResult GetGiros(int idCiudad)
@@ -88,7 +52,14 @@ namespace AppGiros.Controllers
                     }
                 }
             }
-            return Json(list); // serializa la lista a JSON
+            return Json(list); 
+        }
+
+        [HttpGet]
+        public JsonResult ObtenerGirosCiudad(int idCiudad)
+        {
+            var giros = _manejadorGiros.ObtenerGirosCiudad(idCiudad);
+            return Json(giros);
         }
 
     }

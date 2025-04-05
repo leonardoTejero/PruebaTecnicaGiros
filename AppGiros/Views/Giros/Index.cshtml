@@ -1,5 +1,113 @@
-﻿@{
+﻿
+@{
     ViewData["Title"] = "Giros";
 }
 
 <h1>Giros</h1>
+
+<div class="form-group">
+    <label for="idPais">País</label>
+    <select id="idPais" class="form-control">
+        <option value="">Seleccione un país</option>
+    </select>
+</div>
+
+<div class="form-group">
+    <label for="idCiudad">Ciudad</label>
+    <select id="idCiudad" class="form-control">
+        <option value="">Seleccione una ciudad</option>
+    </select>
+</div>
+
+<br />
+<br />
+
+<!-- Contenedor para mostrar los giros -->
+<div class="form-group">
+    <h4>Giros de la ciudad</h4>
+    <table class="table table-striped table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Recibo</th>
+                <th>Ciudad</th>
+            </tr>
+        </thead>
+        <tbody id="tblGiros">
+            <!-- Aquí se llenarán los giros dinámicamente -->
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script>
+        var cboPais = document.getElementById("idPais");
+        var cboCiudad = document.getElementById("idCiudad");
+
+        // Cargar la lista de países al cargar la página
+        document.addEventListener("DOMContentLoaded", function () {
+            fetch("@Url.Action("ObtenerPaises", "Paises")")
+                .then(response => response.json())
+                .then(data => {
+                    console.log("data giros paises: ", data);
+                    data.forEach(pais => {
+                        let option = document.createElement("option");
+                        option.value = pais.idPais;
+                        option.textContent = pais.nombre;
+                        cboPais.appendChild(option);
+                    });
+                })
+                .catch(error => console.error("Error al cargar los países:", error));
+        });
+
+        // Cargar las ciudades al seleccionar un país
+        cboPais.addEventListener("change", function () {
+        var idPais = cboPais.value;
+
+            // Limpiar las ciudades anteriores
+            cboCiudad.innerHTML = '<option value="">Seleccione una ciudad</option>';
+
+            if (idPais) {
+                fetch("@Url.Action("ObtenerCiudadesPais", "Ciudad")" + "?idPais=" + idPais)
+                    .then(response => response.json())
+                    .then(data => {
+                        data.forEach(ciudad => {
+                            let option = document.createElement("option");
+                            option.value = ciudad.id;
+                            option.textContent = ciudad.nombre;
+                            cboCiudad.appendChild(option);
+                        });
+                    })
+                    .catch(error => console.error("Error al cargar las ciudades:", error));
+            }
+        });
+
+        // Cargar los giros al seleccionar una ciudad
+        cboCiudad.addEventListener("change", function () {
+        var idCiudad = cboCiudad.value;
+
+            // Limpiar los giros anteriores
+            tblGiros.innerHTML = '';
+
+            if (idCiudad) {
+                fetch("@Url.Action("ObtenerGirosCiudad", "Giros")" + "?idCiudad=" + idCiudad)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log("giros", data);
+                        data.forEach(giro => {
+                            let row = `
+                                <tr>
+                                    <td>${giro.id}</td>
+                                    <td>${giro.recibo}</td>
+                                    <td>${giro.idCiudad}</td>
+                                </tr>
+                            `;
+                            tblGiros.innerHTML += row;
+                        });
+                    })
+                    .catch(error => console.error("Error al cargar los giros:", error));
+            }
+        });
+
+    </script>
+}

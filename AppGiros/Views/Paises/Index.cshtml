@@ -39,25 +39,6 @@
     </div>
 </div>
 
-<br />
-<br />
-
-<h4>lista de Giros por pais y ciudad</h4>
-<div class="row">
-    <table class="table">
-        <thead class="thead-dark">
-            <tr>
-                <th scope="col">GIR_GIRO_ID</th>
-                <th scope="col">GIR_RECIBO</th>
-                <th scope="col">GIR_CIUDAD_ID</th>
-            </tr>
-        </thead>
-
-        <tbody id="cuerpoGiros"></tbody>
-    </table>
-</div>
-
-
 
 @section Scripts{
 
@@ -112,8 +93,6 @@
                 }
             })
             .then(function (data) {
-
-                //console.log("Datos tabla", data);
                 cargarGridGiros(data);
             });
     }
@@ -137,23 +116,6 @@
             $("#cuerpoGiros").append(tr);
         }
     }
-
-        //function obtenerPaises() {
-        //    $.ajax({
-        //        url: '@Url.Action("ObtenerPaises", "Paises")',
-        //        method: 'GET',
-        //        dataType: "json",
-        //        success: function (data) {
-
-        //            console.log("paises?", data)
-        //            listaPaises = data;
-        //            cargarPaises(data)
-        //        },
-        //        error: function (xhr, textStatus, errorThrown) {
-        //            console.error(xhr, textStatus, errorThrown);
-        //        }
-        //    });
-        //}
 
     function obtenerPaises() {
             idCiudad = cboCiudad.value;
