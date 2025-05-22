@@ -5,6 +5,10 @@
 
 <h1>Giros</h1>
 
+<div>
+    <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#crearGiroModal">Crear Giro</button>
+</div>
+
 <div class="form-group">
     <label for="idPais">País</label>
     <select id="idPais" class="form-control">
@@ -39,8 +43,39 @@
     </table>
 </div>
 
+<!-- Modal para Crear Giro -->
+<div class="modal fade" id="crearGiroModal" tabindex="-1" aria-labelledby="crearGiroModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="crearGiroModalLabel">Crear Giro</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="crearGiroForm">
+                    <div class="mb-3">
+                        <label for="inpRecibo" class="form-label">Recibo</label>
+                        <input type="text" class="form-control" id="inpRecibo" name="recibo" placeholder="Ingrese el número de recibo" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="idCiudadModal" class="form-label">Ciudad</label>
+                        <select class="form-control" id="idCiudadModal" name="idCiudad" required>
+                            <option value="">Seleccione una ciudad</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="guardarGiroBtn">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     <script>
+
         var cboPais = document.getElementById("idPais");
         var cboCiudad = document.getElementById("idCiudad");
 
@@ -71,6 +106,7 @@
                 fetch("@Url.Action("ObtenerCiudadesPais", "Ciudad")" + "?idPais=" + idPais)
                     .then(response => response.json())
                     .then(data => {
+                        console.log("data ciudades: ", data); 
                         data.forEach(ciudad => {
                             let option = document.createElement("option");
                             option.value = ciudad.id;
@@ -107,6 +143,91 @@
                     })
                     .catch(error => console.error("Error al cargar los giros:", error));
             }
+        });
+
+        document.getElementById("guardarGiroBtn").addEventListener("click", function () {
+        
+        const recibo = document.getElementById("inpRecibo").value;
+        const idCiudad = document.getElementById("idCiudadModal").value;
+
+        if (!recibo || !idCiudad) {
+            alert("Por favor, complete todos los campos.");
+            return;
+        }
+
+        const giro = {
+            recibo: recibo, 
+            idCiudad: parseInt(idCiudad)
+        };
+
+        fetch("@Url.Action("CrearGiro", "Giros")", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(giro)
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert("Giro creado exitosamente.");
+                    document.getElementById("crearGiroForm").reset();
+                    document.getElementById("idCiudadModal").innerHTML = '<option value="">Seleccione una ciudad</option>';
+                    var modal = bootstrap.Modal.getInstance(document.getElementById("crearGiroModal"));
+                    modal.hide();
+                } else {
+                    alert("Error al crear el giro.");
+                }
+            })
+            .catch(error => console.error("Error:", error));
+         });
+         
+        document.addEventListener("DOMContentLoaded", function () {
+        // Llenar el dropdown de ciudades en el modal al cargar la página
+            cboPais.addEventListener("change", function () {
+                var idPais = cboPais.value;
+
+                // Limpiar las ciudades anteriores
+                cboCiudad.innerHTML = '<option value="">Seleccione una ciudad</option>';
+                document.getElementById("idCiudadModal").innerHTML = '<option value="">Seleccione una ciudad</option>';
+
+                if (idPais) {
+                    fetch("@Url.Action("ObtenerCiudadesPais", "Ciudad")" + "?idPais=" + idPais)
+                        .then(response => response.json())
+                        .then(data => {
+                            data.forEach(ciudad => {
+                                let option = document.createElement("option");
+                                option.value = ciudad.id;
+                                option.textContent = ciudad.nombre;
+                                cboCiudad.appendChild(option);
+
+                                // Agregar las mismas opciones al dropdown del modal
+                                let modalOption = document.createElement("option");
+                                modalOption.value = ciudad.id;
+                                modalOption.textContent = ciudad.nombre;
+                                document.getElementById("idCiudadModal").appendChild(modalOption);
+                            });
+                        })
+                        .catch(error => console.error("Error al cargar las ciudades:", error));
+                }
+            });
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+        // Llenar el dropdown de ciudades en el modal al cargar la página
+        fetch("@Url.Action("ObtenerCiudades", "Ciudad")")
+            .then(response => response.json())
+            .then(data => {
+                const idCiudadModal = document.getElementById("idCiudadModal");
+                idCiudadModal.innerHTML = '<option value="">Seleccione una ciudad</option>'; // Limpiar opciones anteriores
+
+                data.forEach(ciudad => {
+                    let option = document.createElement("option");
+                    option.value = ciudad.id;
+                    option.textContent = ciudad.nombre;
+                    idCiudadModal.appendChild(option);
+                });
+            })
+            .catch(error => console.error("Error al cargar las ciudades:", error));
         });
 
     </script>

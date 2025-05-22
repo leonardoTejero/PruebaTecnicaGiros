@@ -22,118 +22,37 @@
             </tr>
         </thead>
 
-        <tbody id="cuerpoPaises"></tbody>
+        <tbody id="listadoPaises"></tbody>
     </table>
-</div>
-
-<div class="row">
-    <div class="col-md-6 col-md-offset-3">
-        <div class="form-group">
-            Pais
-            @Html.DropDownList("Paises", Model, new { @class = "form-control", id="idPais" }) @*// Alarga los botones*@
-        </div>
-        <div class="form-group">
-            Ciudad
-            <select id="ciudad" name="ciudad" class="form-control"></select>
-        </div>
-    </div>
 </div>
 
 
 @section Scripts{
 
 <script>
-    var listaGiros = [];
-    var idCiudad= "";
-    var cboPais = document.getElementById("idPais");
-    var cboCiudad = document.getElementById("ciudad");
 
     $(document).ready(function () {
 
         obtenerPaises();
     });
 
-    cboPais.addEventListener("change", obtenerCiudades);
-    cboCiudad.addEventListener("change", obtenerGiros);
-
-    // Llena la lista de ciudades según el país seleccionado
-    function obtenerCiudades() {
-        var idPais = cboPais.value;
-            fetch("@Url.Content("~/Ciudad/ObtenerCiudadesPais")" + "?idPais=" + idPais)
-            .then(function (result) {
-                if (result.ok) {
-                    return result.json();
-                }
-            })
-            .then(function (data) {
-
-                cboCiudad.innerHTML = ""; // Limpiar las opciones anteriores
-                console.log("datos", data); 
-
-                // Agregar opciones
-                data.forEach(function (element) {
-                    let eOption = document.createElement("option");
-                    eOption.appendChild(document.createTextNode(element.nombre));
-                    eOption.value = element.id;
-                    cboCiudad.appendChild(eOption);
-                });
-
-                // obtner datos de giros
-                obtenerGiros();
-            });
-    }
-
-    // Actualiza los datos de la tabla según la ciudad seleccionada
-    function obtenerGiros() {
-        idCiudad = cboCiudad.value;
-        fetch("@Url.Content("~/Giros/GetGiros")" + "?idCiudad=" + idCiudad)
-            .then(function (result) {
-                if (result.ok) {
-                    return result.json();
-                }
-            })
-            .then(function (data) {
-                cargarGridGiros(data);
-            });
-    }
-
-    // Ejecutar para llenar la lista de ciudades al cargar la página
-    obtenerCiudades();
-
-    function cargarGridGiros(data) {
-        $("#cuerpoGiros").html("");
-
-        for (var i = 0; i < data.length; i++) {
-            var tr = `
-                    <tr>
-                    <th>`+ data[i].value + `</th>
-                    <th> `+ data[i].text + `</th>
-                    <th> `+ idCiudad + `</th>
-                    <td>
-                    </td>
-                </tr>
-                `;
-            $("#cuerpoGiros").append(tr);
-        }
-    }
-
     function obtenerPaises() {
-            idCiudad = cboCiudad.value;
-            fetch("@Url.Content("~/Paises/ObtenerPaises")")
-                .then(function (result) {
-                    if (result.ok) {
-                        return result.json();
-                    }
-                })
-                .then(function (data) {
 
-                    console.log(data);
-                    cargarGridPaises(data);
-                });
-        }
+        fetch("@Url.Content("~/Paises/ObtenerPaises")")
+            .then(function (result) {
+                if (result.ok) {
+                    return result.json();
+                }
+            })
+            .then(function (data) {
+
+                console.log(data);
+                cargarGridPaises(data);
+            });
+    }
 
     function cargarGridPaises(data) {
-        $("#cuerpoPaises").html("");
+        $("#listadoPaises").html("");
 
         for (var i = 0; i < data.length; i++) {
             var tr = `
@@ -146,7 +65,7 @@
                         </td>
                     </tr>
                     `;
-            $("#cuerpoPaises").append(tr);
+            $("#listadoPaises").append(tr);
         }
     }
 

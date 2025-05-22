@@ -2,7 +2,6 @@
 using AppGiros.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Data.SqlClient;
-using static AppGiros.Controllers.CiudadController;
 
 namespace AppGiros.Controllers
 {
@@ -60,6 +59,63 @@ namespace AppGiros.Controllers
         {
             var giros = _manejadorGiros.ObtenerGirosCiudad(idCiudad);
             return Json(giros);
+        }
+
+        [HttpPost]
+        public IActionResult CrearGiro(GirosModels giro)
+        {
+            if (giro == null || string.IsNullOrEmpty(giro.Recibo))
+            {
+                return BadRequest("Datos inválidos para crear el giro.");
+            }
+
+            try
+            {
+                _manejadorGiros.CrearGiro(giro);
+                return Ok("Giro creado exitosamente.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error al crear el giro: {ex.Message}");
+            }
+        }
+
+        [HttpPut]
+        public IActionResult EditarGiro(GirosModels giro)
+        {
+            if (giro == null || giro.Id <= 0)
+            {
+                return BadRequest("Datos inválidos para editar el giro.");
+            }
+
+            try
+            {
+                _manejadorGiros.EditarGiro(giro);
+                return Ok("Giro editado exitosamente.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error al editar el giro: {ex.Message}");
+            }
+        }
+
+        [HttpDelete]
+        public IActionResult EliminarGiro(int id)
+        {
+            if (id <= 0)
+            {
+                return BadRequest("ID inválido para eliminar el giro.");
+            }
+
+            try
+            {
+                _manejadorGiros.EliminarGiro(id);
+                return Ok("Giro eliminado exitosamente.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error al eliminar el giro: {ex.Message}");
+            }
         }
 
     }
