@@ -62,7 +62,7 @@ namespace AppGiros.Controllers
         }
 
         [HttpPost]
-        public IActionResult CrearGiro(GirosModels giro)
+        public IActionResult CrearGiro([FromBody] GirosModels giro)
         {
             if (giro == null || string.IsNullOrEmpty(giro.Recibo))
             {
