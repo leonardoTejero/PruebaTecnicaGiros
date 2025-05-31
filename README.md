@@ -1,3 +1,21 @@
+Sitio web en ASP.NET. 
+CRUD’s para cada una de las tablas del modelo de bd (Paises, Ciudades, Giros). Uso de procedimientos almacenados y consultas sql (sin Entity Framework).
+
+
+Características:
+
+DropDownList de Países: Debe cargar todos los nombres de los países.
+
+DropDownList de Ciudades: Debe cargar todos los nombres de las ciudades que pertenezcan al país seleccionado en el DropDownList de países.
+
+GridView mostrando los cuatro primeros registros de la tabla Giros que pertenezcan a la ciudad seleccionada en el DropDownList de ciudades.
+
+Al cambiar la selección del país, se debe actualizar automáticamente el contenido del DropDownList de ciudades y el GridView.
+
+También, al cambiar la selección en el DropDownList de ciudades, se debe actualizar el contenido del GridView.
+
+
+
 Script para generar base de datos
 
 USE [master]

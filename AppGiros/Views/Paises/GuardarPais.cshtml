@@ -4,14 +4,13 @@
     ViewData["Title"] = "GuardarPais";
 }
 
-<h1>GuardarPais</h1>
+<h3>GuardarPais</h3>
 
-<h3>Crear Pais</h3>
 <div class="row">
     <div class="col-md-4">
         <form asp-action="GuardarPais">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
+            <div class="form-group mb-3">
                 <label asp-for="Nombre" class="control-label"></label>
                 <input asp-for="Nombre" class="form-control" />
                 <span asp-validation-for="Nombre" class="text-danger"></span>
@@ -24,6 +23,6 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Regresar a la lista</a>
 </div>
 
