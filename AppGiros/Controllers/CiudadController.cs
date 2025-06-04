@@ -1,7 +1,9 @@
-﻿using AppGiros.Models;
+﻿using AppGiros.Manejadores;
+using AppGiros.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Data.SqlClient;
-using AppGiros.Manejadores;
+using System.Drawing.Printing;
 
 namespace AppGiros.Controllers
 {
@@ -22,12 +24,19 @@ namespace AppGiros.Controllers
         }
 
         [HttpGet]
-        public IActionResult ObtenerCiudades()
+        public IActionResult ObtenerCiudades(int page = 1, int pageSize = 15)
         {
             try
             {
-                var listaCiudades = _manejadorCiudad.ObtenerCiudades();
-                return Ok(listaCiudades);
+                // restriccion de resultados para paginacion
+                var listaCiudades = _manejadorCiudad.ObtenerCiudades()
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+                var totalCiudades = _manejadorCiudad.ObtenerCiudades().Count();
+
+                return Ok(new { ciudades = listaCiudades, totalCiudades });
             }
             catch (Exception ex)
             {
