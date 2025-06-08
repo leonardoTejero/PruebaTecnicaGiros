@@ -86,6 +86,11 @@
 
         obtenerPaises();
         obtenerCiudades(1)
+
+        // avento al cerrar el modal para ejecutar la funcion de limpieza
+        $('#modalCiudad').on('hidden.bs.modal', function () {
+            limpiarModalCiudad();
+        });
     });
 
     function obtenerPaises() {
@@ -161,6 +166,12 @@
 
         $('#idTituloModalCiudad').html("Crear Ciudad");
         $('#modalCiudad').modal("show");
+    }
+
+    function limpiarModalCiudad() {
+        $("#txtNombreCiudad").val('');
+        $("#cmbPais").val('');
+        idPais = '';
     }
 
     function guardarCiudad() {

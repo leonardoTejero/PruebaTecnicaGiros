@@ -96,6 +96,10 @@
         $(document).ready(function () {
 
             obtenerPaises();
+
+            $('#crearGiroModal').on('hidden.bs.modal', function () {
+                limpiarModalGiros();
+            });
         });
 
         function agregarPaises(lstPaises){
@@ -106,6 +110,13 @@
                         option.textContent = pais.nombre;
                         cboModalPais.appendChild(option);
                     });
+        }
+
+        function limpiarModalGiros() {
+            $("#inpRecibo").val('');
+            $("#idPaisModal").val('');
+            $("#idCiudadModal").val('');
+            idPais = '';
         }
 
         function obtenerPaises() {
